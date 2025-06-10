@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScout: Jejak Karbon Digitalmu - Beranda</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css"> <!-- Path relatif ke CSS -->
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/logo.png" type="image/svg+xml">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-link {
+            color: #10B981; /* Green-500 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .content-link:hover {
+            color: #059669; /* Green-600 */
+            text-decoration: underline;
+        }
+        /* Styles for Modal (specific to index.html) */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe; margin: 15% auto; padding: 24px;
+            border: 1px solid #e5e7eb; width: 90%; max-width: 500px; border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .close-button {
+            color: #9ca3af; float: right; font-size: 28px; font-weight: bold;
+        }
+        .close-button:hover, .close-button:focus {
+            color: #1f2937; text-decoration: none; cursor: pointer;
+        }
+        /* Styles for Back to Top Button (specific to index.html) */
+        #backToTopBtn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99;
+            border: none; outline: none; background-color: #14B8A6; /* green-500 */ color: white;
+            cursor: pointer; padding: 12px 15px; border-radius: 50%;
+            font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+        #backToTopBtn:hover {
+            background-color: #0D9488; /* green-600 */
+        }
+
+        /* Chart Styling (specific to index.html) */
+        .chart-container {
+            display: flex; justify-content: space-around; align-items: flex-end;
+            height: 180px; background-color: #f9fafb; padding: 20px 10px;
+            border-radius: 0.5rem; margin-top: 1.5rem; border: 1px solid #e5e7eb;
+        }
+        .chart-bar {
+            width: 25%;
+            border-radius: 0.375rem 0.375rem 0 0;
+            transition: height 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), background-color 0.3s;
+            position: relative;
+            text-align: center; color: white; font-size: 0.70rem;
+            display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px;
+            cursor: pointer;
+        }
+        #transportBar { background-image: linear-gradient(to top, #0EA5E9, #38BDF8); } /* Sky-500 to Sky-400 */
+        #energyBar { background-image: linear-gradient(to top, #F59E0B, #FBBF24); }   /* Amber-500 to Amber-400 */
+        #foodWasteBar { background-image: linear-gradient(to top, #EC4899, #F472B6); } /* Pink-500 to Pink-400 */
+
+        .chart-bar:hover {
+            filter: brightness(1.1);
+        }
+        .bar-label {
+            position: absolute; bottom: -24px; width: 100%;
+            text-align: center; font-size: 0.875rem; color: #4B5563; font-weight: 500;
+        }
+        .chart-bar .tooltip-text { /* Tooltip Styling */
+            visibility: hidden;
+            width: 80px;
+            background-color: #374151; /* gray-700 */
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 105%; /* Position above the bar */
+            left: 50%;
+            margin-left: -40px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+        .chart-bar:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Scroll Animation Styling (specific to index.html) */
+        .fade-in-effect {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-effect.fade-in-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="assets/images/logo.png" alt="EcoScout Logo" class="h-10 w-10" onerror="this.onerror=null;this.src='https://placehold.co/40x40/34D399/FFFFFF?text=ES';this.alt='Logo EcoScout Sementara';">
+                <span class="text-2xl font-bold hijau-logo">EcoScout</span>
+            </a>
+            <button id="mobileMenuButton" class="md:hidden block text-gray-600 hover:hijau-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+            </button>
+            <ul id="navLinks" class="hidden md:flex space-x-4 items-center"> 
+                <li><a href="index.html" class="hijau-logo font-semibold hover:text-green-700">Beranda</a></li>
+                <li><a href="pages/02_tentang_jejak_karbon.html" class="text-gray-600 hover:hijau-logo">Tentang Jejak Karbon</a></li>
+                <li><a href="pages/03_sumber_emisi.html" class="text-gray-600 hover:hijau-logo">Sumber Emisi</a></li>
+                <li class="relative group">
+                    <a href="#" class="text-gray-600 hover:hijau-logo py-2">Tips Mengurangi</a>
+                    <ul class="absolute hidden group-hover:block bg-white shadow-lg rounded-md top-full pt-2 pb-2 w-48 z-20"> 
+                        <li><a href="pages/04_tips_transportasi.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:hijau-logo">Transportasi</a></li>
+                        <li><a href="pages/05_tips_energi_rumah.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:hijau-logo">Energi Rumah</a></li>
+                        <li><a href="pages/06_tips_pola_makan.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:hijau-logo">Pola Makan & Sampah</a></li>
+                    </ul>
+                </li>
+                <li><a href="pages/07_aksi_kolektif.html" class="text-gray-600 hover:hijau-logo">Aksi Kolektif</a></li>
+                <li><a href="pages/08_kuis_kesadaran.html" class="text-gray-600 hover:hijau-logo">Kuis Kesadaran</a></li>
+                <li><a href="pages/09_sumber_referensi.html" class="text-gray-600 hover:hijau-logo">Referensi</a></li>
+                <li><a href="pages/10_tentang_kami.html" class="text-gray-600 hover:hijau-logo">Tentang Kami</a></li>
+            </ul>
+        </nav>
+        <div id="mobileMenu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="index.html" class="block px-6 py-3 hijau-logo font-semibold hover:bg-green-50">Beranda</a>
+            <a href="pages/02_tentang_jejak_karbon.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Tentang Jejak Karbon</a>
+            <a href="pages/03_sumber_emisi.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Sumber Emisi</a>
+            <a href="pages/04_tips_transportasi.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Tips: Transportasi</a>
+            <a href="pages/05_tips_energi_rumah.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Tips: Energi Rumah</a>
+            <a href="pages/06_tips_pola_makan.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Tips: Pola Makan & Sampah</a>
+            <a href="pages/07_aksi_kolektif.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Aksi Kolektif</a>
+            <a href="pages/08_kuis_kesadaran.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Kuis Kesadaran</a>
+            <a href="pages/09_sumber_referensi.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Referensi</a>
+            <a href="pages/10_tentang_kami.html" class="block px-6 py-3 text-gray-600 hover:bg-green-50 hover:hijau-logo">Tentang Kami</a>
+        </div>
+    </header>
+
+    <section class="bg-green-50 py-24 md:py-36 hero-custom-bg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-green-700">Ketahui Jejak Karbon Digitalmu!</h1>
+            <p class="text-lg md:text-xl mb-10 text-slate-600 max-w-2xl mx-auto">Hitung, Pahami, dan Kurangi Dampakmu Terhadap Bumi Bersama EcoScout.</p>
+            <a href="#kalkulator" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-10 rounded-lg text-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">Hitung Sekarang!</a>
+        </div>
+    </section>
+
+    <section id="kalkulator" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-3 text-green-700">Kalkulator Jejak Karbon</h2>
+            <p class="text-center text-slate-500 mb-12 max-w-2xl mx-auto">Isi data berikut untuk memperkirakan jejak karbon tahunan Anda. Perhitungan ini adalah estimasi.</p>
+
+            <form id="carbonForm" class="max-w-3xl mx-auto bg-slate-50 p-8 md:p-10 rounded-xl shadow-lg space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-5 text-green-600 border-b border-green-200 pb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-green-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                        1. Transportasi Mingguan
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="kendaraanPribadi" class="block text-sm font-medium text-slate-700 mb-1">Jenis Kendaraan Pribadi Utama:</label>
+                            <select id="kendaraanPribadi" name="kendaraanPribadi" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                                <option value="tidak_ada">Tidak Ada/Jarang Digunakan</option>
+                                <option value="motor_bensin">Motor Bensin</option>
+                                <option value="mobil_bensin_kecil">Mobil Bensin (Kecil, <1.4L)</option>
+                                <option value="mobil_bensin_sedang">Mobil Bensin (Sedang, 1.4L-2.0L)</option>
+                                <option value="mobil_bensin_besar">Mobil Bensin (Besar, >2.0L)</option>
+                                <option value="mobil_diesel">Mobil Diesel</option>
+                                <option value="mobil_hybrid">Mobil Hybrid</option>
+                                <option value="mobil_listrik">Mobil Listrik</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="jarakKendaraan" class="block text-sm font-medium text-slate-700 mb-1">Jarak Tempuh Kendaraan Pribadi (km/minggu):</label>
+                            <input type="number" id="jarakKendaraan" name="jarakKendaraan" min="0" value="0" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="transportasiUmum" class="block text-sm font-medium text-slate-700 mb-1">Jarak Tempuh Transportasi Umum (km/minggu):</label>
+                            <input type="number" id="transportasiUmum" name="transportasiUmum" min="0" value="0" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-5 text-green-600 border-b border-green-200 pb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-green-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.355a15.07 15.07 0 01-4.5 0M8.25 10.5h7.5M8.25 15h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        2. Energi Rumah Tangga Bulanan
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="listrik" class="block text-sm font-medium text-slate-700 mb-1">Konsumsi Listrik (kWh/bulan):</label>
+                            <input type="number" id="listrik" name="listrik" min="0" value="100" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="sumberListrik" class="block text-sm font-medium text-slate-700 mb-1">Sumber Listrik Utama:</label>
+                            <select id="sumberListrik" name="sumberListrik" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                                <option value="pln_jawa_bali">PLN (Jawa-Bali - mayoritas batu bara)</option>
+                                <option value="pln_luar_jawa_bali">PLN (Luar Jawa-Bali - bervariasi)</option>
+                                <option value="panel_surya">Panel Surya Pribadi</option>
+                                <option value="campuran">Campuran (PLN & Panel Surya)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="gasLpg" class="block text-sm font-medium text-slate-700 mb-1">Penggunaan Gas LPG (kg/bulan):</label>
+                            <input type="number" id="gasLpg" name="gasLpg" min="0" value="3" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm" placeholder="Misal 1 tabung 3kg = 3">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-5 text-green-600 border-b border-green-200 pb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-green-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9.75v9a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 18.75V9.75M21.75 9.75S17.25 2.25 12 2.25 2.25 9.75 2.25 9.75M21.75 9.75H2.25" />
+                        </svg>
+                        3. Pola Makan & Sampah Mingguan
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="konsumsiDaging" class="block text-sm font-medium text-slate-700 mb-1">Konsumsi Daging Merah (sapi/kambing) per minggu:</label>
+                            <select id="konsumsiDaging" name="konsumsiDaging" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                                <option value="rendah">Rendah (0-1 porsi)</option>
+                                <option value="sedang">Sedang (2-4 porsi)</option>
+                                <option value="tinggi">Tinggi (5+ porsi)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="sampah" class="block text-sm font-medium text-slate-700 mb-1">Pengelolaan Sampah Rumah Tangga:</label>
+                            <select id="sampah" name="sampah" class="mt-1 block w-full py-2.5 px-3 border border-slate-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 sm:text-sm">
+                                <option value="tidak_dipilah">Tidak dipilah, dibuang ke TPA</option>
+                                <option value="dipilah_daur_ulang">Dipilah, sebagian didaur ulang</option>
+                                <option value="kompos_daur_ulang">Kompos & Daur Ulang Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center pt-4">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-12 rounded-lg text-lg transition duration-300 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50 shadow-md hover:shadow-lg transform hover:scale-105">Hitung Jejak Karbon Saya</button>
+                </div>
+            </form>
+
+            <div id="hasilKalkulasi" class="mt-16 max-w-2xl mx-auto hidden">
+                <h3 class="text-2xl font-bold text-center mb-8 text-green-700">Hasil Estimasi Jejak Karbon Anda</h3>
+                <div class="bg-green-50 p-8 rounded-xl shadow-lg">
+                    <p class="text-center text-4xl font-bold text-green-600 mb-2">
+                        <span id="totalFootprint">0</span> kg CO2e / tahun
+                    </p>
+                    <p class="text-center text-slate-500 mb-6">(Ini setara dengan <span id="footprintEquivalent"></span>)</p>
+                    <div class="chart-container">
+                        <div id="transportBar" class="chart-bar">
+                            <span class="tooltip-text" id="transportTooltip">0%</span>
+                            <span class="bar-label">Transportasi</span>
+                        </div>
+                        <div id="energyBar" class="chart-bar">
+                            <span class="tooltip-text" id="energyTooltip">0%</span>
+                            <span class="bar-label">Energi Rumah</span>
+                        </div>
+                        <div id="foodWasteBar" class="chart-bar">
+                            <span class="tooltip-text" id="foodWasteTooltip">0%</span>
+                            <span class="bar-label">Pola Makan</span>
+                        </div>
+                    </div>
+                    <div class="mt-10 space-y-3">
+                        <p class="text-sm text-slate-700"><strong>Detail Perkiraan:</strong></p>
+                        <p class="text-sm text-slate-600">Transportasi: <span id="transportFootprintText" class="font-semibold text-slate-700">0</span> kg CO2e/tahun</p>
+                        <p class="text-sm text-slate-600">Energi Rumah: <span id="energyFootprintText" class="font-semibold text-slate-700">0</span> kg CO2e/tahun</p>
+                        <p class="text-sm text-slate-600">Pola Makan & Sampah: <span id="foodWasteFootprintText" class="font-semibold text-slate-700">0</span> kg CO2e/tahun</p>
+                    </div>
+                    <p class="mt-8 text-sm text-slate-500 text-center">Ingat, ini adalah estimasi. Gunakan hasil ini sebagai panduan untuk mengambil langkah positif.</p>
+                    <div class="mt-6 text-center">
+                         <a href="#tips" class="text-green-600 hover:text-green-700 font-semibold">Lihat Tips Mengurangi Jejak Karbon →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalButton">×</span>
+            <h3 id="modalTitle" class="text-xl font-semibold mb-4 text-slate-800">Pesan</h3> 
+            <p id="modalMessage" class="text-slate-600"></p>
+            <div class="mt-6 text-right"> 
+                <button id="modalOkButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-md">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="py-20 bg-slate-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-14"> 
+                <h2 class="text-3xl font-bold text-green-700">Mengapa Jejak Karbon Penting?</h2>
+                <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Memahami jejak karbon adalah langkah pertama menuju gaya hidup yang lebih berkelanjutan.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"> 
+                    <img src="assets/images/1.png" alt="Ilustrasi Dampak Perubahan Iklim" class="w-full h-44 object-cover rounded-lg mb-6" onerror="this.onerror=null;this.src='https://placehold.co/300x200/A7F3D0/134E4A?text=Iklim';this.alt='Gambar Placeholder';">
+                    <h3 class="text-xl font-semibold text-green-600 mb-3">Dampak Perubahan Iklim</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Jejak karbon kita berkontribusi pada emisi gas rumah kaca, mempercepat perubahan iklim global dan dampaknya.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                     <img src="assets/images/2.png" alt="Ilustrasi Kesadaran Lingkungan" class="w-full h-44 object-cover rounded-lg mb-6" onerror="this.onerror=null;this.src='https://placehold.co/300x200/A5F3FC/0E7490?text=Peduli';this.alt='Gambar Placeholder';">
+                    <h3 class="text-xl font-semibold text-green-600 mb-3">Kesadaran & Tanggung Jawab</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Mengetahui jejak karbon meningkatkan kesadaran akan dampak pilihan sehari-hari kita terhadap planet ini.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <img src="assets/images/3.png" alt="Ilustrasi Aksi Positif untuk Lingkungan" class="w-full h-44 object-cover rounded-lg mb-6" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FBCFE8/9D174D?text=Aksi';this.alt='Gambar Placeholder';">
+                    <h3 class="text-xl font-semibold text-green-600 mb-3">Mendorong Aksi Positif</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Dengan data, kita dapat membuat keputusan cerdas untuk mengurangi emisi dan hidup lebih selaras dengan alam.</p>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="pages/02_tentang_jejak_karbon.html" class="text-green-600 hover:text-green-700 font-semibold text-lg">Pelajari Lebih Lanjut →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tips" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-14 text-green-700">Tips Mengurangi Jejak Karbon Anda</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"> 
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-green-500 mr-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
+                        <h3 class="text-xl font-semibold text-green-600">Transportasi Cerdas</h3>
+                    </div>
+                    <p class="text-slate-600 mb-5 text-sm leading-relaxed">Pilih berjalan kaki, bersepeda, atau transportasi umum. Pertimbangkan efisiensi bahan bakar kendaraan pribadi.</p>
+                    <a href="pages/04_tips_transportasi.html" class="text-green-500 hover:text-green-600 font-semibold text-sm">Lihat Tips Transportasi →</a>
+                </div>
+                <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                     <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-green-500 mr-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.355a15.07 15.07 0 01-4.5 0M8.25 10.5h7.5M8.25 15h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <h3 class="text-xl font-semibold text-green-600">Hemat Energi di Rumah</h3>
+                    </div>
+                    <p class="text-slate-600 mb-5 text-sm leading-relaxed">Matikan alat elektronik, gunakan lampu hemat energi, dan optimalkan penggunaan AC atau pemanas.</p>
+                    <a href="pages/05_tips_energi_rumah.html" class="text-green-500 hover:text-green-600 font-semibold text-sm">Lihat Tips Energi Rumah →</a>
+                </div>
+                <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center mb-4">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-green-500 mr-4"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9.75v9a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 18.75V9.75M21.75 9.75S17.25 2.25 12 2.25 2.25 9.75 2.25 9.75M21.75 9.75H2.25" /></svg>
+                        <h3 class="text-xl font-semibold text-green-600">Pola Makan & Sampah Bijak</h3>
+                    </div>
+                    <p class="text-slate-600 mb-5 text-sm leading-relaxed">Kurangi konsumsi daging merah, pilih produk lokal/musiman, dan kelola sampah makanan dengan bijak.</p>
+                    <a href="pages/06_tips_pola_makan.html" class="text-green-500 hover:text-green-600 font-semibold text-sm">Lihat Tips Pola Makan & Sampah →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-800 text-slate-300 py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-10 mb-10"> 
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">EcoScout</h4>
+                    <p class="text-sm leading-relaxed">Membantu Anda memahami dan mengurangi jejak karbon untuk masa depan bumi yang lebih hijau.</p>
+                     <div class="mt-5 flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white" aria-label="Facebook EcoScout">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.35C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z"></path></svg>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-white" aria-label="Instagram EcoScout">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.85s.012-3.584.07-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.059 1.689.073 4.948.073s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-white" aria-label="Twitter EcoScout">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Navigasi Cepat</h4>
+                    <ul class="space-y-2.5 text-sm"> 
+                        <li><a href="#kalkulator" class="hover:text-white">Kalkulator Jejak Karbon</a></li>
+                        <li><a href="pages/02_tentang_jejak_karbon.html" class="hover:text-white">Apa Itu Jejak Karbon?</a></li>
+                        <li><a href="pages/08_kuis_kesadaran.html" class="hover:text-white">Kuis Kesadaran</a></li>
+                        <li><a href="pages/10_tentang_kami.html" class="hover:text-white">Tentang Proyek Ini</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Proyek UCDC 2025</h4>
+                    <p class="text-sm leading-relaxed">Website ini dibuat sebagai bagian dari Lomba Web Design UCDC 2025 dengan tema "Grow Up The Future With Codes".</p>
+                    <p class="text-sm mt-2">Subtema: Lingkungan.</p>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 pt-10 text-center text-sm">
+                <p>© <span id="currentYear"></span> EcoScout. Dibuat dengan ❤️ untuk Bumi.</p>
+                <p class="mt-1">Desain oleh: MPAS-MAP-STAN</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="backToTopBtn" title="Kembali ke atas">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+        </svg>
+    </button>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
